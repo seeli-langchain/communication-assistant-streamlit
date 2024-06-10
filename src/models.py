@@ -25,6 +25,7 @@ class Persona(Base):
     __tablename__ = 'personas'
     id:Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     person_id:Mapped[int] = mapped_column(ForeignKey('persons.id'))
+    title:Mapped[str] = mapped_column(Text, nullable=True)
     text:Mapped[str] = mapped_column(Text, nullable=True)	
     person:Mapped[Person] = relationship('Person', back_populates='personas')
 
