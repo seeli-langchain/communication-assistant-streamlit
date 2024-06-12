@@ -30,7 +30,7 @@ class Persona(Base):
     person:Mapped[Person] = relationship('Person', back_populates='personas')
 
     def __repr__(self) -> str:
-        return f'{self.id} {self.text} {self.person.first_name} {self.person.last_name}'
+        return f'{self.title}'
 
 class Conversation(Base):
     __tablename__ = 'conversations'

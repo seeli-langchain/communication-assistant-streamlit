@@ -59,7 +59,7 @@ def get_conversations_of_main_person() -> List[Conversation]:
     main_person = get_main_person()
     return main_person.conversations
 
-def add_persona_for_main_person(text: str) -> Persona:
+def add_persona_for_main_person() -> Persona:
     main_person = get_main_person()
     persona = Persona(text="", title="New Persona", person=main_person)
     session.add(persona)
@@ -77,6 +77,7 @@ def save_persona(persona_id: int, text: str, title: str) -> Persona:
     return persona
 
 def delete_persona(persona_id: int):
+
     persona = get_persona_by_id(persona_id)
     session.delete(persona)
     session.commit()
