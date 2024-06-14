@@ -1,58 +1,39 @@
 import streamlit as st
 import persisting as repo
+import helper_dlgs as dlgs
+import crud_dialog
 
-if "contact_id" not in st.session_state:
-    st.session_state.contact_id = 0
+class CrudDialog:
 
-st.title("Contacts")
+    dlg_title = "Contact"
 
-pid = 0
-contacts = repo.get_contacts()
+    # repo functions
+    add_func = repo.create_contact
+    read_all_func = repo.get_contacts
+    read_one_func = repo.get_person_by_id
+    delete_func = repo.delete_person
+    save_func = repo.save_person
 
-if contacts is None or len(contacts) == 0:
-    st.warning("No contacts found")
-    if st.button("Add Contact"):
-        st.session_state.contact_idrepo.create_contact(first_name="First Name", last_name="Last Name").id
-        st.success("Added")
-        st.experimental_rerun()
-else:
-    if (st.session_state.contact_id != 0):
-        pid = st.session_state.contact_id
-    else:
-        pid = contacts[0].id
+    def __init__(self, item):
+        self.item = item
+        self.id = item.id
+        self.first_name = item.first_name
+        self.last_name = item.last_name
+        self.text = item.text
 
-    idx = 0
-    for (index, contact) in enumerate(contacts):
-        if (contact.id == pid):
-            idx = index
+    def show_form(self):
+    
+        with st.form(key="form"):
+            col1, col2 = st.columns(2)
+            self.first_name = col1.text_input("First Name", value=self.first_name)
+            self.last_name = col2.text_input("Last Name", value=self.last_name)
+            self.text = st.text_area("Text", value=self.text, height=200)
+            buttons =  dlgs.add_buttons()
+    
+        dlgs.handle_buttons(buttons, self)
+    
+    def save(self):
+        return CrudDialog.save_func(self.id, self.first_name, self.last_name, self.text)
 
-    contact_id = st.selectbox("Select Persona to edit", [contact.id for contact in contacts], 
-                            format_func=lambda x: repo.get_person_by_id(x).__repr__(), index=idx)
+crud_dialog.show(CrudDialog)
 
-    st.session_state.contact_id = contact_id
-    contact = repo.get_person_by_id(contact_id)
-
-    first_name = st.text_input("First Name", value=contact.first_name)
-    last_name = st.text_input("Last Name", value=contact.last_name)
-
-    text = st.text_area("Text", value=contact.text, height=300)
-
-
-    col1, col2, col3 = st.columns(3)
-
-    if col1.button("Save Contact"):
-        repo.save_person(contact_id, first_name=first_name, last_name=last_name, text=text)
-        st.success("Saved")
-        st.experimental_rerun()
-
-    if col2.button("New Contact"):
-        st.session_state.contact_id = repo.create_contact(first_name="First Name", last_name="Last Name").id
-        st.success("Added")
-        st.experimental_rerun()
-
-    if (contact_id):
-        if col3.button("Delete Contact"):
-            repo.delete_person(person_id)
-            st.success("Deleted")
-            st.session_state.contact_id = 0
-            st.experimental_rerun()

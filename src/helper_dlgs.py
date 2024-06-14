@@ -34,6 +34,7 @@ def add_buttons():
     return save, new, delete, cancel, save_and_close
 
 def do_cancel():
+    print("do cancel")
     st.session_state.id = 0
     st.rerun()
 
@@ -66,6 +67,7 @@ def handle_buttons(buttons, repo):
          st.session_state.deleting = False
 
    if buttons[3]:  # cancel
+      print("cancel")
       do_cancel()
       
    if buttons[4]:  # save and close
