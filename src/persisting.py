@@ -30,8 +30,8 @@ def create_main_person(first_name: str, last_name: str) -> Person:
     session.commit()
     return person
 
-def create_contact(first_name: str, last_name: str) -> Person:
-    person = Person(first_name=first_name, last_name=last_name, is_main=False)
+def create_contact(parent_id = None) -> Person:
+    person = Person(first_name="First Name", last_name="Last Name", is_main=False)
     session.add(person)
     session.commit()
     return person
@@ -70,7 +70,7 @@ def get_persona_by_id(id: int) -> Persona:
     return session.query(Persona).get(id)
 
 # Create
-def add_persona_for_main_person() -> Persona:
+def add_persona_for_main_person(parent_id = None) -> Persona:
     main_person = get_main_person()
     persona = Persona(text="", title="New Persona", person=main_person)
     session.add(persona)
@@ -101,7 +101,7 @@ def get_conversation_by_id(id: int) -> Conversation:
     return session.query(Conversation).get(id)
 
 # Create    
-def create_conversation() -> Conversation:
+def create_conversation(parent_id = None) -> Conversation:
     main_person = get_main_person()
     partner = main_person
     conversation = Conversation(person=main_person, partner=partner)
@@ -140,12 +140,16 @@ def get_messages_of_conversation(id: int) -> List[Message]:
 # get all messages of a conversation where the author is the main person
 def get_own_messages_of_conversation(id: int) -> List[Message]:
     conversation = get_conversation_by_id(id)
+    "###########################conversation: ", conversation
+    conversation
     main_person = get_main_person()
     return [message for message in conversation.messages if message.author == main_person]
 
 # get all messages of a conversation where the author is the partner
 def get_received_messages_of_conversation(id: int) -> List[Message]:
+    "Received messages of conversation."
     conversation = get_conversation_by_id(id)
+    "conversation: ", conversation
     main_person = get_main_person()
     return [message for message in conversation.messages if message.author != main_person]
 
@@ -156,12 +160,20 @@ def get_latest_message_of_conversation(id: int) -> Message:
 
 # get latest own message of conversation
 def get_latest_own_message_of_conversation(id: int) -> Message:
+    print('++++++++++++++++++')
+    print('id:', id)
     own_messages = get_own_messages_of_conversation(id)
+    print('len of own_messages:', len(own_messages))
+    if (len(own_messages) == 0):
+        print('create own message')
+        return create_own_message(id)
     return own_messages[-1]
 
 # get latest received message of conversation
 def get_latest_received_message_of_conversation(id: int) -> Message:
     received_messages = get_received_messages_of_conversation(id)
+    if (len(received_messages) == 0):
+        return create_received_message(id)
     return received_messages[-1]
 
 def get_message_by_id(id: int) -> Message:
@@ -174,19 +186,24 @@ def create_received_message(conversation_id: int) -> Message:
     message = Message(conversation=conversation, author_id=author_id)
     session.add(message)
     session.commit()
+    "Received message created."
     return message
 
 def create_own_message(conversation_id: int) -> Message:
     conversation = get_conversation_by_id(conversation_id)
+    print("$$$$$$$$$$$$$$$$$$$$")
+    print('conversation:', conversation)
     author_id = conversation.person_id
     message = Message(conversation=conversation, author_id=author_id)
     session.add(message)
     session.commit()
+    print("Own message created.")
     return message
 
 # Update
-def save_message(id: int, text: str, meta: str, draft: str, sent_at: datetime) -> Message:
+def save_message(id: int, title:str, text: str, meta: str = None, draft: str = None, sent_at: datetime = None) -> Message:
     message = get_message_by_id(id)
+    message.title = title
     message.text = text
     message.meta = meta
     message.draft = draft

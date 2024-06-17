@@ -56,6 +56,7 @@ class Message(Base):
     id:Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     conversation_id:Mapped[int] = mapped_column(ForeignKey('conversations.id'), nullable=False)
     author_id:Mapped[int] = mapped_column(ForeignKey('persons.id'), nullable=False)
+    title:Mapped[str] = mapped_column(Text, nullable=True)
     text:Mapped[str] = mapped_column(Text, nullable=True)
     meta:Mapped[str] = mapped_column(Text, nullable=True)
     draft:Mapped[str] = mapped_column(Text, nullable=True)

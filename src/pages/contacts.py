@@ -10,6 +10,7 @@ class CrudDialog:
     # repo functions
     add_func = repo.create_contact
     read_all_func = repo.get_contacts
+    transfer_to_one = repo.get_person_by_id
     read_one_func = repo.get_person_by_id
     delete_func = repo.delete_person
     save_func = repo.save_person
