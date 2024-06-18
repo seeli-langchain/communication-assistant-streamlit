@@ -3,6 +3,7 @@ import persisting as repo
 import helper_dlgs as dlgs
 import crud_dialog
 from datetime import date as date
+from llm_interaction import get_response
 
 class CrudDialog:
 
@@ -29,16 +30,22 @@ class CrudDialog:
         self.sent_at = item.sent_at
         #if self.sent_at is None:
         #    self.sent_at = date.today()
-        self.extra_left = ["Generate Text"]
+        self.extra_left = ["Generate"]
         self.extra_right = []
         self.func_left = [self.generate_text]
         self.func_right = []
 
     def generate_text(self):
-        st.write("Generating text...")
-    
+        self.save()
+        if self.draft is None:
+            st.warning("Please write a draft first.")
+            st.stop()
+        
+        generated_text = get_response(self.item.conversation)
+        self.text = generated_text
+        self.save()
+            
     def show_form(self):
-
         with st.form(key="form"):
             self.title = st.text_input("Title", value=self.title)
             self.meta = st.text_area("Meta-Information about the message", value=self.meta, height=150)

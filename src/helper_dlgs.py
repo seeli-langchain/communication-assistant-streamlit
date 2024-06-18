@@ -67,13 +67,13 @@ def handle_buttons(buttons, repo, func_left = [], func_right = []):
          st.stop()
 
    if buttons[0 + len(func_left)]:   # new
-      print("Adding new item...")
+      #print("Adding new item...")
       do_new(repo.__class__)
 
 
 
    if buttons[1  + len(func_left)] or st.session_state.deleting:   # delete
-      print("deleting...")
+      #print("deleting...")
       st.session_state.deleting = True
 
       if (st.session_state.confirm_delete is None):
@@ -92,16 +92,16 @@ def handle_buttons(buttons, repo, func_left = [], func_right = []):
 
 
    if buttons[2 + len(func_left)]:   # save
-      print("saving...")
+      #print("saving...")
       repo.save()
 
 
    if buttons[3 + len(func_left)]:  # cancel
-      print("cancelling...")
+      #print("cancelling...")
       do_cancel()
       
    if buttons[4  + len(func_left)]:  # save and close
-      print("saving and closing...")
+      #print("saving and closing...")
       repo.save()
       do_cancel()
 
@@ -128,36 +128,27 @@ def select_item_to_edit(repo_class):
                            #format_func=lambda x: repo_class.read_one_func(x), 
                            index=None, 
                            placeholder="Select an Item to edit", label_visibility="collapsed")
-         print("##################----------------------")
-         print(selected_item, type(selected_item))
-         print("##################----------------------")
+         
+         print("Selected Item: ", selected_item, type(selected_item))
+         
          if selected_item is None:
             st.stop()
          else:
-            print("####### Transfer to the correct item")  
+             
             print(selected_item, type(selected_item))
             item = repo_class.transfer_to_one (selected_item.id)
-
-            print(item, type(item))
+            print("Item to edit: ", item, type(item))
             if (item is None):
                print ("Item is None -- Creating a new one")
                do_new(repo_class)
                st.rerun()
             st.session_state.id = item.id
-            #st.session_state.id = selected_item.id
+            
          add = st.button("➕")
          if add:
                do_new(repo_class)
-
-         
-         
-         if (st.session_state.id is None):
-               st.stop()
-   
          st.rerun()
-      else:
-         print("####### Reading the one item ********  id: ", st.session_state.id) 
-         
+      else:      
          item = repo_class.read_one_func (st.session_state.id)
-         print(item, type(item))
+         print("Loaded item to edit: ", item, type(item))
          return item
