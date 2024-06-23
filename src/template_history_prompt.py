@@ -2,7 +2,7 @@
 from models import Base, Person, Persona, Conversation, Message
 
 
-def get_conversation_history(conversation: Conversation):
+def get_conversation_history_prompt(conversation: Conversation):
 
     messages = conversation.messages[0:-1]
 
@@ -21,7 +21,7 @@ def get_conversation_history(conversation: Conversation):
     for message in messages:
         prompt += f"""
         --------------------------------	
-        Message from: {message.sender.name} sent at {message.sent_at}: 
+        Message from: {message.author} sent at {message.sent_at}: 
 
         {message.title}
         

@@ -11,13 +11,15 @@ from models import Conversation
 
 def get_response(conversation: Conversation):
 
+    load_dotenv()
+
     template = get_template(conversation)
 
-    prompt = ChatPromptTemplate.from_template(template)
+    #prompt = ChatPromptTemplate.from_template(template)
 
     llm = ChatOpenAI()
         
-    chain = prompt | llm | StrOutputParser()
+    chain =  llm | StrOutputParser()
     
-    return chain.invoke()
+    return chain.invoke(template)
 

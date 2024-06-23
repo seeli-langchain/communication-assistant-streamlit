@@ -4,7 +4,7 @@ from datetime import datetime
 
 def get_conversation_prompt(conversation: Conversation):
 
-    title = conversation.title
+    #title = conversation.title
     description = conversation.text
     date = conversation.started_at
     today = datetime.today()
@@ -37,8 +37,9 @@ def get_conversation_prompt(conversation: Conversation):
     return f"""
     Here is the information about the conversation that I am having 
     with the {partner}
+    Information about the the partner: {partner.text}
     
-    Title: {title}
+    
     Description: {description}
 
     {conversation_start_info}

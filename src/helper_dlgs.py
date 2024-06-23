@@ -123,7 +123,7 @@ def select_item_to_edit(repo_class):
          handle_no_items(repo_class)
          st.stop()
          
-      if (st.session_state.id == 0 and len(items) > 1):
+      if (st.session_state.id == 0 or st.session_state.id is None):
          selected_item = st.selectbox("item", [item for item in items], 
                            #format_func=lambda x: repo_class.read_one_func(x), 
                            index=None, 
@@ -132,6 +132,10 @@ def select_item_to_edit(repo_class):
          print("Selected Item: ", selected_item, type(selected_item))
          
          if selected_item is None:
+            add = st.button("➕")
+            if add:
+               do_new(repo_class)
+               st.rerun()
             st.stop()
          else:
              
